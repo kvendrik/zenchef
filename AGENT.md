@@ -1,13 +1,13 @@
 # zenchef — Agent Instructions
 
-You have access to a CLI tool called `zenchef` that can check restaurant availability and make reservations at any restaurant using Zenchef/Formitable.
+You have access to a CLI tool called `zenchef` that can check restaurant availability and make reservations at any restaurant using Zenchef/Formitable. Run it with `bunx zenchef` — no install needed.
 
 ## Commands
 
 ### Check if a restaurant is supported
 
 ```bash
-zenchef check <restaurant-url>
+bunx zenchef check <restaurant-url>
 ```
 
 Returns whether the restaurant uses Zenchef/Formitable. Exit code 0 = supported, 1 = not supported. Always run this first before trying other commands.
@@ -15,7 +15,7 @@ Returns whether the restaurant uses Zenchef/Formitable. Exit code 0 = supported,
 ### Check availability
 
 ```bash
-zenchef availability <restaurant-url> --date DD/MM --guests <n> [--ticket <uid>]
+bunx zenchef availability <restaurant-url> --date DD/MM --guests <n> [--ticket <uid>]
 ```
 
 - `<restaurant-url>`: the restaurant's website URL (e.g. `https://bakrestaurant.nl`)
@@ -28,7 +28,7 @@ Returns a list of tickets (experiences/seatings) with their available time slots
 ### Book a table
 
 ```bash
-zenchef book <restaurant-url> \
+bunx zenchef book <restaurant-url> \
   --date DD/MM --time HH:MM --guests <n> \
   --ticket <uid> \
   --name "First Last" \
@@ -46,7 +46,7 @@ On success, prints the booking UID and a payment URL (if deposit required). Give
 ### Join a waitlist
 
 ```bash
-zenchef waitlist <restaurant-url> \
+bunx zenchef waitlist <restaurant-url> \
   --date DD/MM --time HH:MM --guests <n> \
   --ticket <uid> \
   --name "First Last" \
@@ -58,10 +58,10 @@ Use this when a time slot has status WAITLIST or FULL.
 
 ## Typical workflow
 
-1. Run `zenchef check <url>` to check if the restaurant is supported
-2. Run `zenchef availability <url> --date DD/MM --guests <n>` to see what's open
+1. Run `bunx zenchef check <url>` to check if the restaurant is supported
+2. Run `bunx zenchef availability <url> --date DD/MM --guests <n>` to see what's open
 3. Pick a ticket UID and time from the results
-4. Run `zenchef book` (or `waitlist` if full) with the user's details
+4. Run `bunx zenchef book` (or `waitlist` if full) with the user's details
 
 ## Notes
 

@@ -4,11 +4,12 @@ Book restaurants from your terminal. No browser, no app, no clicking through wid
 
 Works with any restaurant that uses [Zenchef/Formitable](https://www.zenchef.com/) for reservations (thousands across the Netherlands and Europe).
 
-## Setup
+## Quick start
+
+No install needed — just run it with `bunx`:
 
 ```bash
-bun install
-bun link
+bunx zenchef check https://bakrestaurant.nl
 ```
 
 ## Usage
@@ -16,15 +17,15 @@ bun link
 ### Check if a restaurant is supported
 
 ```bash
-zenchef check https://bakrestaurant.nl
+bunx zenchef check https://bakrestaurant.nl
 ```
 
-Returns whether the restaurant uses Zenchef/Formitable, prints its UID, and suggests next commands. Exits with code 0 if supported, 1 if not.
+Tells you if the restaurant uses Zenchef/Formitable and suggests next commands. Exit code 0 = supported, 1 = not.
 
 ### Check availability
 
 ```bash
-zenchef availability https://bakrestaurant.nl --date 26/04 --guests 2
+bunx zenchef availability https://bakrestaurant.nl --date 26/04 --guests 2
 ```
 
 Shows all available experiences/seatings with time slots, color-coded by status. Filter to a specific ticket with `--ticket <uid>`.
@@ -32,7 +33,7 @@ Shows all available experiences/seatings with time slots, color-coded by status.
 ### Book a table
 
 ```bash
-zenchef book https://bakrestaurant.nl \
+bunx zenchef book https://bakrestaurant.nl \
   --date 26/04 --time 12:30 --guests 2 \
   --ticket 0b0d0586 \
   --name "Jane Doe" \
@@ -41,12 +42,12 @@ zenchef book https://bakrestaurant.nl \
   --payment ideal
 ```
 
-Creates the booking and returns a payment URL if a deposit is required. If you omit `--payment`, the CLI will show you which methods are available and their fees. Payment methods: `ideal`, `creditcard`, `applepay`. If the ticket has no deposit, `--payment` is not needed.
+Creates the booking and returns a payment URL if a deposit is required. If you omit `--payment`, the CLI shows available methods and their fees. Payment methods: `ideal`, `creditcard`, `applepay`. If the ticket has no deposit, `--payment` is not needed.
 
 ### Join a waitlist
 
 ```bash
-zenchef waitlist https://bakrestaurant.nl \
+bunx zenchef waitlist https://bakrestaurant.nl \
   --date 26/04 --time 12:30 --guests 2 \
   --ticket 0b0d0586 \
   --name "Jane Doe" \

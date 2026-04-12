@@ -1,6 +1,8 @@
 # zenchef
 
-CLI tool for checking restaurant availability and making reservations via the Zenchef/Formitable widget API.
+Book restaurants from your terminal. No browser, no app, no clicking through widget flows — just give it a restaurant URL and go.
+
+Works with any restaurant that uses [Zenchef/Formitable](https://www.zenchef.com/) for reservations (thousands across the Netherlands and Europe).
 
 ## Setup
 
@@ -11,47 +13,34 @@ bun link
 
 ## Usage
 
-```
-zenchef <restaurant-url> availability --date DD/MM --guests <n> [--ticket <uid>]
-zenchef <restaurant-url> book --date DD/MM --time HH:MM --guests <n> --ticket <uid> --name "..." --email "..." --phone "..."
-zenchef <restaurant-url> waitlist --date DD/MM --time HH:MM --guests <n> --ticket <uid> --name "..." --email "..." --phone "..."
-```
-
-### Check availability
+### 1. Check availability
 
 ```bash
-zenchef https://www.restaurant.nl availability --date 26/04 --guests 2
+zenchef https://bakrestaurant.nl availability --date 26/04 --guests 2
 ```
 
-Returns all tickets (experiences/seatings) and their time slots for the given date. Optionally filter to a specific ticket:
+Shows all available experiences/seatings with time slots, color-coded by status. Filter to a specific ticket with `--ticket <uid>`.
+
+### 2. Book a table
 
 ```bash
-zenchef https://www.restaurant.nl availability --date 26/04 --guests 2 --ticket e2cc8eac
-```
-
-### Book a table
-
-```bash
-zenchef https://www.restaurant.nl book \
-  --date 26/04 \
-  --time 19:00 \
-  --guests 2 \
-  --ticket e2cc8eac \
+zenchef https://bakrestaurant.nl book \
+  --date 26/04 --time 12:30 --guests 2 \
+  --ticket 0b0d0586 \
   --name "Jane Doe" \
   --email "jane@example.com" \
-  --phone "+31612345678"
+  --phone "+31612345678" \
+  --payment ideal
 ```
 
-Checks the time slot is available, shows payment methods if a deposit is required, and attempts the booking.
+Creates the booking and returns a payment URL if a deposit is required. Payment methods: `ideal`, `creditcard`, `applepay`.
 
-### Join a waitlist
+### 3. Join a waitlist
 
 ```bash
-zenchef https://www.restaurant.nl waitlist \
-  --date 26/04 \
-  --time 19:00 \
-  --guests 2 \
-  --ticket e2cc8eac \
+zenchef https://bakrestaurant.nl waitlist \
+  --date 26/04 --time 12:30 --guests 2 \
+  --ticket 0b0d0586 \
   --name "Jane Doe" \
   --email "jane@example.com" \
   --phone "+31612345678"
@@ -59,7 +48,7 @@ zenchef https://www.restaurant.nl waitlist \
 
 ## How it works
 
-1. Fetches the restaurant's website and extracts the Formitable widget UID from the page HTML
-2. Uses the public Formitable widget API to query tickets, availability, and submit bookings
+1. Scrapes the restaurant's website to find the Formitable widget UID
+2. Hits the public Formitable widget API — the same one the booking widget on restaurant sites uses
 
-The booking and waitlist POST endpoints are based on reverse-engineered payloads and may need adjustment.
+No API keys needed. No auth. Just a URL.

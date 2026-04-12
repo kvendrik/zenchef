@@ -19,7 +19,7 @@ bunx zenchef availability <restaurant-url> --date DD/MM --guests <n> [--ticket <
 ```
 
 - `<restaurant-url>`: the restaurant's website URL (e.g. `https://bakrestaurant.nl`)
-- `--date`: date in DD/MM format (assumes current year)
+- `--date`: date in DD/MM format (uses current year, or next year if the date is in the past)
 - `--guests`: number of people
 - `--ticket`: optional, filter to a specific ticket/experience UID
 
@@ -67,5 +67,5 @@ Use this when a time slot has status WAITLIST or FULL.
 
 - The tool works by scraping the restaurant's website for a Formitable widget embed, then using the public widget API. If a restaurant doesn't use Formitable/Zenchef, it won't work.
 - Dates are DD/MM format, not MM/DD.
-- Phone numbers should include country code (e.g. `+31619778353`).
-- The waitlist endpoint is untested and may need adjustment.
+- Phone numbers should include country code (e.g. `+31612345678`).
+- Only time slots with AVAILABLE status can be booked directly. WAITLIST, FULL, and other statuses require using the waitlist command.

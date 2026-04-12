@@ -58,7 +58,7 @@ export function formatPaymentMethod(method: PaymentMethod): string {
     method.paymentFee > 0
       ? chalk.dim(` (+€${(method.paymentFee / 100).toFixed(2)} fee)`)
       : "";
-  return `  ${chalk.white(method.description)}${fee}`;
+  return `  ${chalk.white.bold(method.id)}  ${method.description}${fee}`;
 }
 
 export function formatError(message: string): string {

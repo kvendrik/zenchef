@@ -63,7 +63,7 @@ export interface BookingPayload {
     tags: string[];
   };
   ticketUid: string;
-  paymentMethodId: string;
+  paymentMethodId: string | null;
   issuerId: string;
   returnUrl: string;
   promotionCode: string | null;

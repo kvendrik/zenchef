@@ -8,25 +8,32 @@ import type {
 
 const BASE_URL = "https://widget-api.formitable.com/api";
 const LANG = "en";
+const FETCH_TIMEOUT_MS = 15_000;
+
+function fetchWithTimeout(url: string, options?: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(new Error(`Request timed out after ${FETCH_TIMEOUT_MS / 1000}s`)), FETCH_TIMEOUT_MS);
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timeout));
+}
 
 async function apiGet<T>(path: string): Promise<T> {
-  const response = await fetch(`${BASE_URL}${path}`);
+  const response = await fetchWithTimeout(`${BASE_URL}${path}`);
   if (!response.ok) {
     const body = await response.text();
-    throw new Error(`API error ${response.status}: ${body}`);
+    throw new Error(`GET ${path} failed (${response.status}): ${body}`);
   }
   return response.json() as Promise<T>;
 }
 
 async function apiPost<T>(path: string, payload: unknown): Promise<T> {
-  const response = await fetch(`${BASE_URL}${path}`, {
+  const response = await fetchWithTimeout(`${BASE_URL}${path}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
   if (!response.ok) {
     const body = await response.text();
-    throw new Error(`API error ${response.status}: ${body}`);
+    throw new Error(`POST ${path} failed (${response.status}): ${body}`);
   }
   return response.json() as Promise<T>;
 }
@@ -49,16 +56,6 @@ export function getTicketAvailability(
 ): Promise<TimeSlot[]> {
   return apiGet<TimeSlot[]>(
     `/availability/${restaurantUid}/ticket/day/${ticketUid}/${isoDatetime}/${guests}/${LANG}`
-  );
-}
-
-export function getAvailability(
-  restaurantUid: string,
-  isoDatetime: string,
-  guests: number
-): Promise<TimeSlot[]> {
-  return apiGet<TimeSlot[]>(
-    `/availability/${restaurantUid}/day/${isoDatetime}/${guests}/${LANG}`
   );
 }
 

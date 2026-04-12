@@ -27,6 +27,15 @@ export async function book(args: {
   payment?: string;
 }): Promise<void> {
   try {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(args.email)) {
+      console.error(formatError(`Invalid email address "${args.email}".`));
+      process.exit(1);
+    }
+    if (!/^\+?\d[\d\s\-()]{6,}$/.test(args.phone)) {
+      console.error(formatError(`Invalid phone number "${args.phone}". Include country code (e.g. +31612345678).`));
+      process.exit(1);
+    }
+
     const uid = await extractRestaurantUid(args.restaurantUrl);
     const isoDatetime = parseDateToIso(args.date);
 
@@ -62,10 +71,13 @@ export async function book(args: {
       process.exit(1);
     }
 
-    if (slot.status === "FULL") {
+    if (slot.status !== "AVAILABLE") {
+      const hint = slot.status === "FULL" || slot.status === "WAITLIST"
+        ? " Consider using the waitlist command."
+        : "";
       console.error(
         formatError(
-          `Time slot ${args.time} is FULL. Consider using the waitlist command.`
+          `Time slot ${args.time} is ${slot.status}.${hint}`
         )
       );
       process.exit(1);
@@ -98,11 +110,11 @@ export async function book(args: {
     // Parse name into first/last
     const nameParts = args.name.trim().split(/\s+/);
     const firstName = nameParts[0] ?? "";
-    const lastName = nameParts.slice(1).join(" ") || firstName;
+    const lastName = nameParts.slice(1).join(" ");
 
     const payload: BookingPayload = {
       booking: {
-        title: "MALE",
+        title: "OTHER",
         firstName,
         lastName,
         email: args.email,
@@ -146,13 +158,14 @@ export async function book(args: {
     console.log("Attempting booking...");
     const result = await createBooking(uid, payload);
 
-    const bookingResult = result as { bookingUid?: string; paymentUrl?: string | null };
+    const bookingResult = result != null && typeof result === "object" ? result as Record<string, unknown> : {};
+    const bookingUid = typeof bookingResult.bookingUid === "string" ? bookingResult.bookingUid : null;
 
-    if (bookingResult.bookingUid) {
-      console.log(formatSuccess(`Booking created: ${bookingResult.bookingUid}`));
+    if (bookingUid) {
+      console.log(formatSuccess(`Booking created: ${bookingUid}`));
 
       if (ticket.deposit && ticket.price > 0) {
-        const payment = await getPaymentUrl(bookingResult.bookingUid);
+        const payment = await getPaymentUrl(bookingUid);
         if (payment.paymentUrl) {
           console.log();
           console.log(`Payment URL: ${payment.paymentUrl}`);

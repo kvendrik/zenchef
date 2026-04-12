@@ -26,7 +26,11 @@ program
   .description("Check available time slots")
   .argument("<url>", "Restaurant website URL")
   .requiredOption("--date <DD/MM>", "Date in DD/MM format")
-  .requiredOption("--guests <n>", "Number of guests", parseInt)
+  .requiredOption("--guests <n>", "Number of guests (minimum 1)", (v) => {
+    const n = parseInt(v, 10);
+    if (isNaN(n) || n < 1) throw new Error("Guests must be at least 1.");
+    return n;
+  })
   .option("--ticket <uid>", "Filter to a specific ticket UID")
   .action(async (url: string, opts: { date: string; guests: number; ticket?: string }) => {
     await availability({ restaurantUrl: url, date: opts.date, guests: opts.guests, ticket: opts.ticket });
@@ -38,7 +42,11 @@ program
   .argument("<url>", "Restaurant website URL")
   .requiredOption("--date <DD/MM>", "Date in DD/MM format")
   .requiredOption("--time <HH:MM>", "Time slot")
-  .requiredOption("--guests <n>", "Number of guests", parseInt)
+  .requiredOption("--guests <n>", "Number of guests (minimum 1)", (v) => {
+    const n = parseInt(v, 10);
+    if (isNaN(n) || n < 1) throw new Error("Guests must be at least 1.");
+    return n;
+  })
   .requiredOption("--ticket <uid>", "Ticket UID from availability")
   .requiredOption("--name <name>", "Full name")
   .requiredOption("--email <email>", "Email address")
@@ -54,7 +62,11 @@ program
   .argument("<url>", "Restaurant website URL")
   .requiredOption("--date <DD/MM>", "Date in DD/MM format")
   .requiredOption("--time <HH:MM>", "Time slot")
-  .requiredOption("--guests <n>", "Number of guests", parseInt)
+  .requiredOption("--guests <n>", "Number of guests (minimum 1)", (v) => {
+    const n = parseInt(v, 10);
+    if (isNaN(n) || n < 1) throw new Error("Guests must be at least 1.");
+    return n;
+  })
   .requiredOption("--ticket <uid>", "Ticket UID from availability")
   .requiredOption("--name <name>", "Full name")
   .requiredOption("--email <email>", "Email address")

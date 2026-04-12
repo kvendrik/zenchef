@@ -11,7 +11,7 @@ const program = new Command();
 program
   .name("zenchef")
   .description("Book restaurants from your terminal via the Zenchef/Formitable widget API")
-  .version("0.1.0");
+  .version("0.1.1");
 
 program
   .command("check")

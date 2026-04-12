@@ -33,7 +33,7 @@ zenchef https://bakrestaurant.nl book \
   --payment ideal
 ```
 
-Creates the booking and returns a payment URL if a deposit is required. Payment methods: `ideal`, `creditcard`, `applepay`.
+Creates the booking and returns a payment URL if a deposit is required. If you omit `--payment`, the CLI will show you which methods are available and their fees. Payment methods: `ideal`, `creditcard`, `applepay`. If the ticket has no deposit, `--payment` is not needed.
 
 ### 3. Join a waitlist
 

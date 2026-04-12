@@ -13,6 +13,14 @@ bun link
 
 ## Usage
 
+### Check if a restaurant is supported
+
+```bash
+zenchef https://bakrestaurant.nl
+```
+
+Returns whether the restaurant uses Zenchef/Formitable and prints its UID. Exits with code 0 if supported, 1 if not.
+
 ### 1. Check availability
 
 ```bash

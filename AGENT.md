@@ -4,6 +4,14 @@ You have access to a CLI tool called `zenchef` that can check restaurant availab
 
 ## Commands
 
+### Check if a restaurant is supported
+
+```bash
+zenchef <restaurant-url>
+```
+
+Returns whether the restaurant uses Zenchef/Formitable. Exit code 0 = supported, 1 = not supported. Always run this first before trying other commands.
+
 ### Check availability
 
 ```bash
@@ -50,9 +58,10 @@ Use this when a time slot has status WAITLIST or FULL.
 
 ## Typical workflow
 
-1. Run `availability` to see what's open
-2. Pick a ticket UID and time from the results
-3. Run `book` (or `waitlist` if full) with the user's details
+1. Run `zenchef <url>` to check if the restaurant is supported
+2. Run `availability` to see what's open
+3. Pick a ticket UID and time from the results
+4. Run `book` (or `waitlist` if full) with the user's details
 
 ## Notes
 

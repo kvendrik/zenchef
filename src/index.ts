@@ -3,15 +3,21 @@
 import { availability } from "./commands/availability.ts";
 import { book } from "./commands/book.ts";
 import { waitlist } from "./commands/waitlist.ts";
+import { check } from "./commands/check.ts";
 import { formatError } from "./format.ts";
 
 const args = process.argv.slice(2);
 const restaurantUrl = args[0];
 const command = args[1];
 
-if (!restaurantUrl || !command) {
+if (!restaurantUrl) {
   printUsage();
   process.exit(1);
+}
+
+if (!command) {
+  await check({ restaurantUrl });
+  process.exit(0);
 }
 
 function getFlag(name: string): string | undefined {

@@ -46,6 +46,10 @@ zenchef https://bakrestaurant.nl waitlist \
   --phone "+31612345678"
 ```
 
+## Agent usage
+
+This tool is designed to be used by LLM agents. Point your agent at [`AGENT.md`](./AGENT.md) for full instructions on how to use the CLI.
+
 ## How it works
 
 1. Scrapes the restaurant's website to find the Formitable widget UID

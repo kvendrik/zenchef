@@ -16,23 +16,23 @@ bun link
 ### Check if a restaurant is supported
 
 ```bash
-zenchef https://bakrestaurant.nl
+zenchef check https://bakrestaurant.nl
 ```
 
-Returns whether the restaurant uses Zenchef/Formitable and prints its UID. Exits with code 0 if supported, 1 if not.
+Returns whether the restaurant uses Zenchef/Formitable, prints its UID, and suggests next commands. Exits with code 0 if supported, 1 if not.
 
-### 1. Check availability
+### Check availability
 
 ```bash
-zenchef https://bakrestaurant.nl availability --date 26/04 --guests 2
+zenchef availability https://bakrestaurant.nl --date 26/04 --guests 2
 ```
 
 Shows all available experiences/seatings with time slots, color-coded by status. Filter to a specific ticket with `--ticket <uid>`.
 
-### 2. Book a table
+### Book a table
 
 ```bash
-zenchef https://bakrestaurant.nl book \
+zenchef book https://bakrestaurant.nl \
   --date 26/04 --time 12:30 --guests 2 \
   --ticket 0b0d0586 \
   --name "Jane Doe" \
@@ -43,10 +43,10 @@ zenchef https://bakrestaurant.nl book \
 
 Creates the booking and returns a payment URL if a deposit is required. If you omit `--payment`, the CLI will show you which methods are available and their fees. Payment methods: `ideal`, `creditcard`, `applepay`. If the ticket has no deposit, `--payment` is not needed.
 
-### 3. Join a waitlist
+### Join a waitlist
 
 ```bash
-zenchef https://bakrestaurant.nl waitlist \
+zenchef waitlist https://bakrestaurant.nl \
   --date 26/04 --time 12:30 --guests 2 \
   --ticket 0b0d0586 \
   --name "Jane Doe" \

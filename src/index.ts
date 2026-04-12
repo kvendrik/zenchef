@@ -1,94 +1,66 @@
 #!/usr/bin/env bun
 
+import { Command } from "commander";
 import { availability } from "./commands/availability.ts";
 import { book } from "./commands/book.ts";
 import { waitlist } from "./commands/waitlist.ts";
 import { check } from "./commands/check.ts";
-import { formatError } from "./format.ts";
 
-const args = process.argv.slice(2);
-const restaurantUrl = args[0];
-const command = args[1];
+const program = new Command();
 
-if (!restaurantUrl) {
-  printUsage();
-  process.exit(1);
-}
+program
+  .name("zenchef")
+  .description("Book restaurants from your terminal via the Zenchef/Formitable widget API")
+  .version("0.1.0");
 
-if (!command) {
-  await check({ restaurantUrl });
-  process.exit(0);
-}
+program
+  .command("check")
+  .description("Check if a restaurant uses Zenchef/Formitable")
+  .argument("<url>", "Restaurant website URL")
+  .action(async (url: string) => {
+    await check({ restaurantUrl: url });
+  });
 
-function getFlag(name: string): string | undefined {
-  const index = args.indexOf(`--${name}`);
-  if (index === -1 || index + 1 >= args.length) return undefined;
-  const value = args[index + 1]!;
-  if (value.startsWith("--")) return undefined;
-  return value;
-}
+program
+  .command("availability")
+  .description("Check available time slots")
+  .argument("<url>", "Restaurant website URL")
+  .requiredOption("--date <DD/MM>", "Date in DD/MM format")
+  .requiredOption("--guests <n>", "Number of guests", parseInt)
+  .option("--ticket <uid>", "Filter to a specific ticket UID")
+  .action(async (url: string, opts: { date: string; guests: number; ticket?: string }) => {
+    await availability({ restaurantUrl: url, date: opts.date, guests: opts.guests, ticket: opts.ticket });
+  });
 
-function requireFlag(name: string): string {
-  const value = getFlag(name);
-  if (!value) {
-    console.error(formatError(`Missing required flag: --${name}`));
-    process.exit(1);
-  }
-  return value;
-}
+program
+  .command("book")
+  .description("Book a table")
+  .argument("<url>", "Restaurant website URL")
+  .requiredOption("--date <DD/MM>", "Date in DD/MM format")
+  .requiredOption("--time <HH:MM>", "Time slot")
+  .requiredOption("--guests <n>", "Number of guests", parseInt)
+  .requiredOption("--ticket <uid>", "Ticket UID from availability")
+  .requiredOption("--name <name>", "Full name")
+  .requiredOption("--email <email>", "Email address")
+  .requiredOption("--phone <phone>", "Phone number with country code")
+  .option("--payment <method>", "Payment method: ideal, creditcard, applepay")
+  .action(async (url: string, opts: { date: string; time: string; guests: number; ticket: string; name: string; email: string; phone: string; payment?: string }) => {
+    await book({ restaurantUrl: url, ...opts });
+  });
 
-function requireNumericFlag(name: string): number {
-  const value = requireFlag(name);
-  const num = parseInt(value, 10);
-  if (isNaN(num)) {
-    console.error(formatError(`--${name} must be a number, got "${value}"`));
-    process.exit(1);
-  }
-  return num;
-}
+program
+  .command("waitlist")
+  .description("Join a waitlist")
+  .argument("<url>", "Restaurant website URL")
+  .requiredOption("--date <DD/MM>", "Date in DD/MM format")
+  .requiredOption("--time <HH:MM>", "Time slot")
+  .requiredOption("--guests <n>", "Number of guests", parseInt)
+  .requiredOption("--ticket <uid>", "Ticket UID from availability")
+  .requiredOption("--name <name>", "Full name")
+  .requiredOption("--email <email>", "Email address")
+  .requiredOption("--phone <phone>", "Phone number with country code")
+  .action(async (url: string, opts: { date: string; time: string; guests: number; ticket: string; name: string; email: string; phone: string }) => {
+    await waitlist({ restaurantUrl: url, ...opts });
+  });
 
-switch (command) {
-  case "availability": {
-    const date = requireFlag("date");
-    const guests = requireNumericFlag("guests");
-    const ticket = getFlag("ticket");
-    await availability({ restaurantUrl, date, guests, ticket });
-    break;
-  }
-  case "book": {
-    const date = requireFlag("date");
-    const time = requireFlag("time");
-    const guests = requireNumericFlag("guests");
-    const ticket = requireFlag("ticket");
-    const name = requireFlag("name");
-    const email = requireFlag("email");
-    const phone = requireFlag("phone");
-    const payment = getFlag("payment");
-    await book({ restaurantUrl, date, time, guests, ticket, name, email, phone, payment });
-    break;
-  }
-  case "waitlist": {
-    const date = requireFlag("date");
-    const time = requireFlag("time");
-    const guests = requireNumericFlag("guests");
-    const ticket = requireFlag("ticket");
-    const name = requireFlag("name");
-    const email = requireFlag("email");
-    const phone = requireFlag("phone");
-    await waitlist({ restaurantUrl, date, time, guests, ticket, name, email, phone });
-    break;
-  }
-  default:
-    console.error(formatError(`Unknown command: ${command}`));
-    printUsage();
-    process.exit(1);
-}
-
-function printUsage(): void {
-  console.log(`
-Usage:
-  zenchef <restaurant-url> availability --date DD/MM --guests <n> [--ticket <uid>]
-  zenchef <restaurant-url> book --date DD/MM --time HH:MM --guests <n> --ticket <uid> --name "..." --email "..." --phone "..." [--payment <method>]
-  zenchef <restaurant-url> waitlist --date DD/MM --time HH:MM --guests <n> --ticket <uid> --name "..." --email "..." --phone "..."
-  `);
-}
+program.parse();

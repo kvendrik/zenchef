@@ -61,12 +61,17 @@ async function formitableDates(
 ) {
   const days = await getMonthAvailability(uid, month, year, guests);
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const futureDays = days.filter((d) => new Date(d.dayString + "T12:00:00") >= today);
+
   console.log(formatMonthHeader(month, year));
   console.log();
 
-  const available = days.filter((d) => d.status === 6);
-  const waitlist = days.filter((d) => d.status === 1 && d.message?.toLowerCase().includes("fully booked"));
-  const closed = days.filter((d) => d.status === 0 || (d.status === 1 && d.message?.toLowerCase().includes("closed")));
+  const available = futureDays.filter((d) => d.status === 0 || d.status === 6);
+  const waitlist = futureDays.filter((d) => d.status === 1 && d.message?.toLowerCase().includes("fully booked"));
+  const closed = futureDays.filter((d) => d.status === 1 || d.status === 2);
 
   if (available.length === 0 && waitlist.length === 0) {
     console.log(chalk.dim("  No available dates this month."));
@@ -115,6 +120,9 @@ async function zenchefDates(
 
   const days = await zenchefApi.getAvailabilitiesSummary(uid, dateBegin, dateEnd);
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   console.log(formatMonthHeader(month, year));
   console.log();
 
@@ -122,6 +130,7 @@ async function zenchefDates(
   const waitlistOnly: typeof days = [];
 
   for (const d of days) {
+    if (new Date(d.date + "T12:00:00") < today) continue;
     if (!d.isOpen || d.shifts.length === 0) continue;
 
     const hasAvail = d.shifts.some(

@@ -58,6 +58,18 @@ Reference for manually testing changes. Each restaurant covers different scenari
 
 ## Formitable restaurants
 
+### BAK Restaurant (bakrestaurant.nl)
+- **System:** Formitable (static HTML)
+- **UID:** dadd7a3b
+- **Scenario:** Formitable status code coverage. This restaurant returns `status 0` for available dates (not `status 6` like De Kas). With large guest counts (e.g. `--guests 10`), some dates return `status 6` (limited availability). Closed Mon/Tue (`status 1` with empty message). Past dates return `status 2`. Essential for verifying the `dates` command handles all Formitable status codes correctly.
+- **Test commands:**
+  ```
+  bun src/index.ts dates https://bakrestaurant.nl --guests 2
+  bun src/index.ts dates https://bakrestaurant.nl --guests 10
+  ```
+- **Expected:** Only future dates shown (no past dates). Available dates are Wed–Sun. Mon/Tue excluded (restaurant closed). With `--guests 10`, should still show available dates (status 0 + status 6 both treated as available).
+- **Cross-check:** Compare output against `curl -s "https://widget-api.formitable.com/api/availability/dadd7a3b/month/<M>/<YYYY>/2/en"` — status 0 and 6 should appear as available, status 1 as closed/waitlist, status 2 (past) should be filtered out.
+
 ### Monsieur Rouge (monsieurrouge.nl)
 - **System:** Formitable (static HTML, `ft-widget-b2` div)
 - **UID:** b3d6c5c5
@@ -136,6 +148,17 @@ Reference for manually testing changes. Each restaurant covers different scenari
 ### Month navigation
 - `bun src/index.ts dates <url> --guests 2 --month 06/2026` — test future months.
 - `bun src/index.ts dates <url> --guests 2 --month 01/2026` — test past months (should show no availability).
+
+### Past date filtering
+- `bun src/index.ts dates https://bakrestaurant.nl --guests 2` — current month should only show dates from today onwards, never past dates. Cross-check that the first date in the output is today or later.
+- Important for both Formitable and Zenchef paths — the API may return past dates (Formitable returns them with `status 2`, Zenchef returns them with `isOpen: false` or with shifts), but the CLI must filter them out.
+
+### Formitable status code mapping
+- The Formitable month availability API uses different status codes across restaurants. Always verify with at least two Formitable restaurants:
+  - `bakrestaurant.nl` — uses `status 0` for available dates
+  - `restaurantdekas.com/nl/tuin` — uses `status 6` for available dates
+  - Both should show correct results from `bun src/index.ts dates <url> --guests 2`
+- Status reference: `0` = available, `1` = closed/fully booked (check `message` field), `2` = past date, `6` = available/limited availability.
 
 ### Deep pages
 - `restaurantdekas.com/nl/tuin` — widget is on a subpage, not the homepage. Verify the CLI works with full subpage URLs.

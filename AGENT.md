@@ -48,11 +48,13 @@ bunx zenchef book <restaurant-url> \
   --name "First Last" \
   --email "email@example.com" \
   --phone "+31612345678" \
-  [--payment <method>]
+  [--payment <method>] \
+  [--comment "text"]
 ```
 
 - `--time`: must match a `timeString` from the availability output
 - `--ticket`: required, the ticket UID from availability
+- `--comment`: optional, a note for the restaurant (e.g. dietary requirements, seating preferences)
 - `--payment`: payment method ID. Required if the ticket has a deposit. If omitted and a deposit is required, the CLI prints available payment methods with their fees and exits — use this to discover which methods are available.
 
 On success, prints the booking UID and a payment URL (if deposit required). Give the payment URL to the user so they can complete payment.

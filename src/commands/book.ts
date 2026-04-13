@@ -27,6 +27,7 @@ export async function book(args: {
   email: string;
   phone: string;
   payment?: string;
+  comment?: string;
 }): Promise<void> {
   try {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(args.email)) {
@@ -138,7 +139,7 @@ async function formitableBook(
       culture: "en",
       source: "Widget",
       sendFeedbackMail: true,
-      comments: "",
+      comments: args.comment || "",
       color: "#3edca8",
       walkIn: false,
       companyName: "",
@@ -253,7 +254,7 @@ async function zenchefBook(
     country: "nl",
     phone_number: args.phone,
     email: args.email,
-    comment: "",
+    comment: args.comment || "",
     custom_field: {},
     customersheet: {
       firstname: firstName,

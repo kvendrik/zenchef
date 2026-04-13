@@ -114,8 +114,11 @@ bunx zenchef book https://bakrestaurant.nl \
   --name "Jane Doe" \
   --email "jane@example.com" \
   --phone "+31612345678" \
-  --payment ideal
+  --payment ideal \
+  --comment "One guest is vegetarian, no nuts please"
 ```
+
+`--comment` is optional — use it to pass a note to the restaurant (e.g. dietary restrictions, seating preferences).
 
 Creates the booking and returns a payment URL if a deposit is required. If the ticket has a deposit and you omit `--payment`, the CLI lists available payment methods and their fees so you can pick one. If the ticket has no deposit, `--payment` is not needed.
 

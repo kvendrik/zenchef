@@ -69,7 +69,8 @@ program
   .requiredOption("--email <email>", "Email address")
   .requiredOption("--phone <phone>", "Phone number with country code")
   .option("--payment <method>", "Payment method: ideal, creditcard, applepay")
-  .action(async (url: string, opts: { date: string; time: string; guests: number; ticket: string; name: string; email: string; phone: string; payment?: string }) => {
+  .option("--comment <text>", "Comment or note for the restaurant")
+  .action(async (url: string, opts: { date: string; time: string; guests: number; ticket: string; name: string; email: string; phone: string; payment?: string; comment?: string }) => {
     await book({ restaurantUrl: url, ...opts });
   });
 

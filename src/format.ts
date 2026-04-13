@@ -4,7 +4,7 @@ import type { Ticket, TimeSlot, PaymentMethod, ZenchefShift, ZenchefShiftSlot, Z
 export function formatTicketHeader(ticket: Ticket): string {
   const parts = [chalk.bold.cyan(ticket.title)];
   if (ticket.deposit) {
-    parts.push(chalk.yellow(`€${(ticket.price / 100).toFixed(2)} deposit`));
+    parts.push(chalk.yellow(`€${(ticket.price / 100).toFixed(2)} deposit/person`));
   }
   if (ticket.refundPolicy) {
     parts.push(chalk.dim(`refund: ${ticket.refundPolicy}`));

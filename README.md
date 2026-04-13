@@ -81,7 +81,7 @@ Shows all ticket types (experiences/seatings) for a date with their full descrip
 
 ```
 Reservation (822a8062)
-  €40.00 deposit  ·  refund: 24h  ·  180min
+  €40.00 deposit/person  ·  refund: 24h  ·  180min
 
   What an excellent choice! Welcome to BAK restaurant. We offer a fixed €75
   tasting menu, with the option to add à la carte specials in the restaurant.
@@ -90,7 +90,7 @@ Reservation (822a8062)
   to us in advance.
 
 Exclusive wines (c0c5cea0)
-  €40.00 deposit  ·  refund: 24h  ·  180min
+  €40.00 deposit/person  ·  refund: 24h  ·  180min
 
   This ticket includes our tasting menu with an exclusive wine pairing.
 

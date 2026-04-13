@@ -61,7 +61,7 @@ async function formitableTickets(
 
     const meta: string[] = [];
     if (ticket.deposit) {
-      meta.push(chalk.yellow(`€${(ticket.price / 100).toFixed(2)} deposit`));
+      meta.push(chalk.yellow(`€${(ticket.price / 100).toFixed(2)} deposit/person`));
     }
     if (ticket.refundPolicy) {
       meta.push(chalk.dim(`refund: ${ticket.refundPolicy}`));

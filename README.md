@@ -4,6 +4,8 @@ Book restaurants from your terminal. No browser, no app, no clicking through wid
 
 Works with any restaurant that uses [Zenchef/Formitable](https://www.zenchef.com/) for reservations (thousands across the Netherlands and Europe).
 
+This tool is designed to be used by LLM agents. Point your agent at [`AGENT.md`](./AGENT.md) for full instructions on how to use the CLI.
+
 ## Quick start
 
 No install needed — just run it with `bunx`:
@@ -127,10 +129,6 @@ bunx zenchef waitlist https://bakrestaurant.nl \
   --email "jane@example.com" \
   --phone "+31612345678"
 ```
-
-## Agent usage
-
-This tool is designed to be used by LLM agents. Point your agent at [`AGENT.md`](./AGENT.md) for full instructions on how to use the CLI.
 
 ## How it works
 

@@ -1,6 +1,6 @@
 {
   "name": "zenchef",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Book restaurants from your terminal via the Zenchef/Formitable widget API",
   "module": "src/index.ts",
   "type": "module",

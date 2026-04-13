@@ -38,14 +38,41 @@ async function apiPost<T>(path: string, payload: unknown): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export function getTickets(
+export async function getTickets(
   restaurantUid: string,
   isoDatetime: string,
   guests: number
 ): Promise<Ticket[]> {
-  return apiGet<Ticket[]>(
-    `/product/${restaurantUid}/search/${isoDatetime}/${guests}/${LANG}`
+  // The Formitable search API is time-sensitive — restaurants with only
+  // lunch or only dinner service return 0 tickets if queried at the wrong
+  // time of day. Search multiple time points and deduplicate.
+  const dateBase = isoDatetime.split("T")[0]!;
+  const times = [
+    `${dateBase}T10:00:00.000Z`,
+    `${dateBase}T14:00:00.000Z`,
+    `${dateBase}T18:00:00.000Z`,
+  ];
+
+  const results = await Promise.all(
+    times.map((t) =>
+      apiGet<Ticket[]>(
+        `/product/${restaurantUid}/search/${t}/${guests}/${LANG}`
+      )
+    )
   );
+
+  // Deduplicate by ticket UID
+  const seen = new Set<string>();
+  const tickets: Ticket[] = [];
+  for (const batch of results) {
+    for (const ticket of batch) {
+      if (!seen.has(ticket.uid)) {
+        seen.add(ticket.uid);
+        tickets.push(ticket);
+      }
+    }
+  }
+  return tickets;
 }
 
 export function getTicketAvailability(
@@ -97,4 +124,23 @@ export function joinWaitlist(
   payload: WaitlistPayload
 ): Promise<unknown> {
   return apiPost<unknown>(`/waitlist/${restaurantUid}`, payload);
+}
+
+export interface MonthDay {
+  day: number;
+  month: number;
+  dayString: string;
+  status: number;
+  message: string;
+}
+
+export function getMonthAvailability(
+  restaurantUid: string,
+  month: number,
+  year: number,
+  guests: number
+): Promise<MonthDay[]> {
+  return apiGet<MonthDay[]>(
+    `/availability/${restaurantUid}/month/${month}/${year}/${guests}/${LANG}`
+  );
 }

@@ -1,3 +1,10 @@
+export type WidgetSystem = "formitable" | "zenchef";
+
+export interface ScrapeResult {
+  uid: string;
+  system: WidgetSystem;
+}
+
 export interface Ticket {
   uid: string;
   title: string;
@@ -84,4 +91,102 @@ export interface WaitlistPayload {
   partySize: number;
   productUid: string;
   sendNotifications: boolean;
+}
+
+// --- Zenchef API types ---
+
+export interface ZenchefShiftSlot {
+  name: string;
+  slot_name: string;
+  possible_guests: number[];
+  waitlist_possible_guests: number[];
+  closed: boolean;
+  marked_as_full: boolean;
+  occupation: {
+    scheduled: { available: number };
+    waitlist: { available: number };
+  };
+  offers: {
+    id: number;
+    possible_guests: number[];
+    rooms: number[];
+  }[];
+  available_rooms: Record<string, number[]>;
+}
+
+export interface ZenchefShift {
+  id: number;
+  name: string;
+  name_translations: Record<string, string>;
+  open: string;
+  close: string;
+  capacity: { min: number; max: number; total_per_slot: number };
+  is_offer_required: boolean;
+  prepayment_param: {
+    is_web_booking_askable: boolean;
+    min_guests: number;
+    charge_per_guests: number;
+    deposit_type: string;
+  } | null;
+  cancelation_param: { enduser_cancelable_before: number } | null;
+  shift_slots: ZenchefShiftSlot[];
+  offers: ZenchefOffer[];
+  bookable_rooms: number[];
+}
+
+export interface ZenchefAvailabilityDay {
+  date: string;
+  shifts: ZenchefShift[];
+}
+
+export interface ZenchefOffer {
+  id: number;
+  name: string;
+  name_translations: Record<string, string>;
+  description: Record<string, string>;
+  is_active: boolean;
+  is_highlighted: boolean;
+  charge_per_guests: number;
+  has_prepayment: boolean;
+  picture: { url: string } | null;
+  weekdays: Record<string, boolean>;
+}
+
+export interface ZenchefAuthToken {
+  timestamp: number;
+  authToken: string;
+}
+
+export interface ZenchefBookingPayload {
+  day: string;
+  nb_guests: number;
+  time: string;
+  lang: string;
+  firstname: string;
+  lastname: string;
+  civility: string;
+  country: string;
+  phone_number: string;
+  email: string;
+  comment: string;
+  custom_field: Record<string, unknown>;
+  customersheet: {
+    firstname: string;
+    lastname: string;
+    civility: string;
+    phone: string;
+    email: string;
+    optins: unknown[];
+    country: string;
+    lang: string;
+  };
+  wish: { booking_room_id?: number };
+  offers: { offer_id: number; count: number }[];
+  type: string;
+}
+
+export interface ZenchefRoom {
+  id: number;
+  name: string;
+  name_translations: Record<string, string>;
 }

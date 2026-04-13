@@ -5,6 +5,7 @@ import { availability } from "./commands/availability.ts";
 import { book } from "./commands/book.ts";
 import { waitlist } from "./commands/waitlist.ts";
 import { check } from "./commands/check.ts";
+import { dates } from "./commands/dates.ts";
 
 const program = new Command();
 
@@ -19,6 +20,20 @@ program
   .argument("<url>", "Restaurant website URL")
   .action(async (url: string) => {
     await check({ restaurantUrl: url });
+  });
+
+program
+  .command("dates")
+  .description("Show which dates have availability")
+  .argument("<url>", "Restaurant website URL")
+  .requiredOption("--guests <n>", "Number of guests (minimum 1)", (v) => {
+    const n = parseInt(v, 10);
+    if (isNaN(n) || n < 1) throw new Error("Guests must be at least 1.");
+    return n;
+  })
+  .option("--month <MM/YYYY>", "Month to check (default: current month)")
+  .action(async (url: string, opts: { guests: number; month?: string }) => {
+    await dates({ restaurantUrl: url, guests: opts.guests, month: opts.month });
   });
 
 program

@@ -28,6 +28,17 @@ Without `--date`: returns which dates in the month have availability vs. are ful
 
 With `--date`: returns time slots for that date, grouped by time. Each slot lists all ticket types (experiences/seatings) with their status (AVAILABLE, WAITLIST, FULL), spot counts, and ticket ID.
 
+### Show ticket details
+
+```bash
+bunx zenchef tickets <restaurant-url> --date DD/MM --guests <n>
+```
+
+- `--date`: date in DD/MM format
+- `--guests`: number of people
+
+Returns all ticket types (experiences/seatings) for the given date with their full descriptions, deposit info, refund policy, duration, and ticket IDs. Use this when the user wants to understand what each ticket type offers before choosing one.
+
 ### Book a table
 
 ```bash
@@ -64,8 +75,9 @@ Use this when a time slot has status WAITLIST or FULL.
 1. Run `bunx zenchef check <url>` to check if the restaurant is supported
 2. If the user hasn't picked a date, run `bunx zenchef availability <url> --guests <n>` to find dates with availability
 3. Run `bunx zenchef availability <url> --date DD/MM --guests <n>` to see time slots and ticket types for a specific date
-4. Pick a ticket UID and time from the results
-5. Run `bunx zenchef book` with the user's details (omit `--payment` first to discover available payment methods if a deposit is required)
+4. If the user wants more detail on what each ticket offers, run `bunx zenchef tickets <url> --date DD/MM --guests <n>`
+5. Pick a ticket UID and time from the results
+6. Run `bunx zenchef book` with the user's details (omit `--payment` first to discover available payment methods if a deposit is required)
 
 ## Notes
 

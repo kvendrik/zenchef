@@ -2,6 +2,7 @@
 
 import { Command } from "commander";
 import { availability } from "./commands/availability.ts";
+import { tickets } from "./commands/tickets.ts";
 import { book } from "./commands/book.ts";
 import { waitlist } from "./commands/waitlist.ts";
 import { check } from "./commands/check.ts";
@@ -36,6 +37,20 @@ program
   .option("--ticket <uid>", "Filter to a specific ticket UID (only used with --date)")
   .action(async (url: string, opts: { guests: number; date?: string; month?: string; ticket?: string }) => {
     await availability({ restaurantUrl: url, guests: opts.guests, date: opts.date, month: opts.month, ticket: opts.ticket });
+  });
+
+program
+  .command("tickets")
+  .description("Show ticket types with full descriptions for a date")
+  .argument("<url>", "Restaurant website URL")
+  .requiredOption("--date <DD/MM>", "Date in DD/MM format")
+  .requiredOption("--guests <n>", "Number of guests (minimum 1)", (v) => {
+    const n = parseInt(v, 10);
+    if (isNaN(n) || n < 1) throw new Error("Guests must be at least 1.");
+    return n;
+  })
+  .action(async (url: string, opts: { date: string; guests: number }) => {
+    await tickets({ restaurantUrl: url, date: opts.date, guests: opts.guests });
   });
 
 program

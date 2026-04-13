@@ -71,6 +71,38 @@ With `--date`, drills into that date and shows time slots. Each time slot lists 
   Exclusive wines (c0c5cea0)  FULL
 ```
 
+### Show ticket details
+
+```bash
+bunx zenchef tickets https://bakrestaurant.nl --date 16/04 --guests 2
+```
+
+Shows all ticket types (experiences/seatings) for a date with their full descriptions, deposit info, and ticket IDs. Use this to understand what each ticket offers before booking.
+
+```
+Reservation (822a8062)
+  €40.00 deposit  ·  refund: 24h  ·  180min
+
+  What an excellent choice! Welcome to BAK restaurant. We offer a fixed €75
+  tasting menu, with the option to add à la carte specials in the restaurant.
+
+  Please note, if you have specific dietary requirements please mention these
+  to us in advance.
+
+Exclusive wines (c0c5cea0)
+  €40.00 deposit  ·  refund: 24h  ·  180min
+
+  This ticket includes our tasting menu with an exclusive wine pairing.
+
+  Alongside the menu, we will serve an aperitif followed by five carefully
+  selected rare and remarkable wines that pair beautifully with the menu.
+
+  The price for the menu + the exclusive wines is 245€ per person.
+
+  This option is only available through advance booking due to the
+  preparation required.
+```
+
 ### Book a table
 
 ```bash

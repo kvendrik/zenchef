@@ -12,6 +12,18 @@ bunx zenchef check <restaurant-url>
 
 Returns whether the restaurant uses Zenchef/Formitable. Exit code 0 = supported, 1 = not supported. Always run this first before trying other commands.
 
+### Show dates with availability
+
+```bash
+bunx zenchef dates <restaurant-url> --guests <n> [--month <MM/YYYY>]
+```
+
+- `<restaurant-url>`: the restaurant's website URL (e.g. `https://bakrestaurant.nl`)
+- `--guests`: number of people
+- `--month`: optional, month to check in MM/YYYY format (defaults to current month)
+
+Returns which dates in the month have availability vs. are fully booked (waitlist-only) vs. closed. Use this to find open dates before checking specific time slots with `availability`.
+
 ### Check availability
 
 ```bash
@@ -59,9 +71,10 @@ Use this when a time slot has status WAITLIST or FULL.
 ## Typical workflow
 
 1. Run `bunx zenchef check <url>` to check if the restaurant is supported
-2. Run `bunx zenchef availability <url> --date DD/MM --guests <n>` to see what's open
-3. Pick a ticket UID and time from the results
-4. Run `bunx zenchef book` (or `waitlist` if full) with the user's details
+2. If the user hasn't picked a date, run `bunx zenchef dates <url> --guests <n>` to find dates with availability
+3. Run `bunx zenchef availability <url> --date DD/MM --guests <n>` to see time slots for a specific date
+4. Pick a ticket UID and time from the results
+5. Run `bunx zenchef book` (or `waitlist` if full) with the user's details
 
 ## Notes
 

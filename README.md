@@ -22,6 +22,14 @@ bunx zenchef check https://bakrestaurant.nl
 
 Tells you if the restaurant uses Zenchef/Formitable and suggests next commands. Exit code 0 = supported, 1 = not.
 
+### Show dates with availability
+
+```bash
+bunx zenchef dates https://bakrestaurant.nl --guests 2
+```
+
+Shows which dates in a given month have availability. Defaults to the current month — use `--month MM/YYYY` to check a different month. Useful for finding open dates before drilling into specific time slots.
+
 ### Check availability
 
 ```bash

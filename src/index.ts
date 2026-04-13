@@ -7,12 +7,13 @@ import { waitlist } from "./commands/waitlist.ts";
 import { check } from "./commands/check.ts";
 import { dates } from "./commands/dates.ts";
 
+const pkg = await Bun.file(new URL("../package.json", import.meta.url)).json();
 const program = new Command();
 
 program
   .name("zenchef")
   .description("Book restaurants from your terminal via the Zenchef/Formitable widget API")
-  .version("0.1.1");
+  .version(pkg.version);
 
 program
   .command("check")

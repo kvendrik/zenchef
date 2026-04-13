@@ -28,27 +28,32 @@ export function formatStatus(status: string): string {
   }
 }
 
-export function formatTimeSlot(slot: TimeSlot): string {
-  const time = chalk.white.bold(slot.displayTime);
-  const status = formatStatus(slot.status);
-  const spots =
-    slot.spotsTotal > 0
-      ? chalk.dim(` (${slot.spotsOpen}/${slot.spotsTotal} spots)`)
-      : "";
-  return `  ${time}  ${status}${spots}`;
+export interface TicketSlotEntry {
+  ticket: Ticket;
+  slot: TimeSlot | null; // null = ticket has no slot at this time
 }
 
-export function formatAvailabilityTable(
-  ticket: Ticket,
-  slots: TimeSlot[]
+export function formatAvailabilityByTime(
+  timeSlots: Map<string, TicketSlotEntry[]>
 ): string {
-  const lines = [formatTicketHeader(ticket), ""];
-  if (slots.length === 0) {
-    lines.push(chalk.dim("  No time slots available"));
-  } else {
-    for (const slot of slots) {
-      lines.push(formatTimeSlot(slot));
+  const lines: string[] = [];
+  for (const [displayTime, entries] of timeSlots) {
+    lines.push(chalk.white.bold(displayTime));
+    for (const { ticket, slot } of entries) {
+      const label = chalk.cyan(ticket.title);
+      const id = chalk.dim(`(${ticket.uid})`);
+      if (!slot) {
+        lines.push(`  ${label} ${id}  ${formatStatus("FULL")}`);
+      } else {
+        const status = formatStatus(slot.status);
+        const spots =
+          slot.spotsTotal > 0
+            ? chalk.dim(` (${slot.spotsOpen}/${slot.spotsTotal} spots)`)
+            : "";
+        lines.push(`  ${label} ${id}  ${status}${spots}`);
+      }
     }
+    lines.push("");
   }
   return lines.join("\n");
 }
@@ -82,27 +87,32 @@ function zenchefSlotStatus(slot: ZenchefShiftSlot, guests: number): string {
   return "AVAILABLE";
 }
 
-export function formatZenchefSlot(slot: ZenchefShiftSlot, guests: number): string {
-  const time = chalk.white.bold(slot.name);
-  const status = zenchefSlotStatus(slot, guests);
-  const statusStr = formatStatus(status);
-  const spots = slot.occupation.scheduled.available;
-  const spotsStr = spots > 0 ? chalk.dim(` (${spots} spots)`) : "";
-  return `  ${time}  ${statusStr}${spotsStr}`;
+export interface ZenchefShiftSlotEntry {
+  shift: ZenchefShift;
+  slot: ZenchefShiftSlot | null; // null = shift has no slot at this time
 }
 
-export function formatZenchefAvailabilityTable(
-  shift: ZenchefShift,
-  slots: ZenchefShiftSlot[],
+export function formatZenchefAvailabilityByTime(
+  timeSlots: Map<string, ZenchefShiftSlotEntry[]>,
   guests: number
 ): string {
-  const lines = [formatZenchefShiftHeader(shift), ""];
-  if (slots.length === 0) {
-    lines.push(chalk.dim("  No time slots available"));
-  } else {
-    for (const slot of slots) {
-      lines.push(formatZenchefSlot(slot, guests));
+  const lines: string[] = [];
+  for (const [time, entries] of timeSlots) {
+    lines.push(chalk.white.bold(time));
+    for (const { shift, slot } of entries) {
+      const label = chalk.cyan(shift.name);
+      const id = chalk.dim(`(${shift.id})`);
+      if (!slot) {
+        lines.push(`  ${label} ${id}  ${formatStatus("FULL")}`);
+      } else {
+        const status = zenchefSlotStatus(slot, guests);
+        const statusStr = formatStatus(status);
+        const spots = slot.occupation.scheduled.available;
+        const spotsStr = spots > 0 ? chalk.dim(` (${spots} spots)`) : "";
+        lines.push(`  ${label} ${id}  ${statusStr}${spotsStr}`);
+      }
     }
+    lines.push("");
   }
   return lines.join("\n");
 }

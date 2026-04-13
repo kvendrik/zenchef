@@ -12,30 +12,21 @@ bunx zenchef check <restaurant-url>
 
 Returns whether the restaurant uses Zenchef/Formitable. Exit code 0 = supported, 1 = not supported. Always run this first before trying other commands.
 
-### Show dates with availability
-
-```bash
-bunx zenchef dates <restaurant-url> --guests <n> [--month <MM/YYYY>]
-```
-
-- `<restaurant-url>`: the restaurant's website URL (e.g. `https://bakrestaurant.nl`)
-- `--guests`: number of people
-- `--month`: optional, month to check in MM/YYYY format (defaults to current month)
-
-Returns which dates in the month have availability vs. are fully booked (waitlist-only) vs. closed. Use this to find open dates before checking specific time slots with `availability`.
-
 ### Check availability
 
 ```bash
-bunx zenchef availability <restaurant-url> --date DD/MM --guests <n> [--ticket <uid>]
+bunx zenchef availability <restaurant-url> --guests <n> [--date DD/MM] [--month <MM/YYYY>] [--ticket <uid>]
 ```
 
 - `<restaurant-url>`: the restaurant's website URL (e.g. `https://bakrestaurant.nl`)
-- `--date`: date in DD/MM format (uses current year, or next year if the date is in the past)
 - `--guests`: number of people
-- `--ticket`: optional, filter to a specific ticket/experience UID
+- `--date`: optional, date in DD/MM format (uses current year, or next year if the date is in the past)
+- `--month`: optional, month to check in MM/YYYY format (defaults to current month, only used without --date)
+- `--ticket`: optional, filter to a specific ticket/experience UID (only used with --date)
 
-Returns a list of tickets (experiences/seatings) with their available time slots, statuses (AVAILABLE, WAITLIST, FULL), and spot counts.
+Without `--date`: returns which dates in the month have availability vs. are fully booked (waitlist-only) vs. closed. Use this to find open dates first.
+
+With `--date`: returns time slots for that date, grouped by time. Each slot lists all ticket types (experiences/seatings) with their status (AVAILABLE, WAITLIST, FULL), spot counts, and ticket ID.
 
 ### Book a table
 
@@ -51,7 +42,7 @@ bunx zenchef book <restaurant-url> \
 
 - `--time`: must match a `timeString` from the availability output
 - `--ticket`: required, the ticket UID from availability
-- `--payment`: `ideal`, `creditcard`, or `applepay`. Required if the ticket has a deposit. If omitted, the CLI prints available methods and exits.
+- `--payment`: payment method ID. Required if the ticket has a deposit. If omitted and a deposit is required, the CLI prints available payment methods with their fees and exits — use this to discover which methods are available.
 
 On success, prints the booking UID and a payment URL (if deposit required). Give the payment URL to the user so they can complete payment.
 
@@ -71,10 +62,10 @@ Use this when a time slot has status WAITLIST or FULL.
 ## Typical workflow
 
 1. Run `bunx zenchef check <url>` to check if the restaurant is supported
-2. If the user hasn't picked a date, run `bunx zenchef dates <url> --guests <n>` to find dates with availability
-3. Run `bunx zenchef availability <url> --date DD/MM --guests <n>` to see time slots for a specific date
+2. If the user hasn't picked a date, run `bunx zenchef availability <url> --guests <n>` to find dates with availability
+3. Run `bunx zenchef availability <url> --date DD/MM --guests <n>` to see time slots and ticket types for a specific date
 4. Pick a ticket UID and time from the results
-5. Run `bunx zenchef book` (or `waitlist` if full) with the user's details
+5. Run `bunx zenchef book` with the user's details (omit `--payment` first to discover available payment methods if a deposit is required)
 
 ## Notes
 

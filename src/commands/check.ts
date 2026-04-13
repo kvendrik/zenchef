@@ -10,7 +10,7 @@ export async function check(args: {
     console.log(chalk.green("Yes") + ` — this restaurant uses ${systemLabel} (UID: ${uid})`);
     console.log();
     console.log("Next steps:");
-    console.log(`  zenchef dates ${args.restaurantUrl} --guests 2`);
+    console.log(`  zenchef availability ${args.restaurantUrl} --guests 2`);
     console.log(`  zenchef availability ${args.restaurantUrl} --date DD/MM --guests 2`);
     console.log(`  zenchef book ${args.restaurantUrl} --date DD/MM --time HH:MM --guests 2 --ticket <uid> --name "..." --email "..." --phone "..."`);
   } catch {
